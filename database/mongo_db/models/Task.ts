@@ -30,8 +30,7 @@ const taskSchema: Schema<task> = new Schema(
             required: true
         },
         tag_id: {
-            type: String,
-            required: true
+            type: String
         },
         status: {
             type: String,
