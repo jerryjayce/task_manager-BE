@@ -31,4 +31,28 @@ export default class TaskController {
         }
     }
 
+    static async fetch_user_tasks(req: Request, res: Response) {
+        try {
+
+            const data: any = await TaskService.fetch_user_tasks(req);
+            return ResponseHelper.send_response(res, data?.http_status || 200, data?.data, data?.message);
+
+        } catch (e) {
+            console.log(e);
+            return ResponseHelper.send_response(res, 500, {});
+        }
+    }
+
+    static async fetch_task(req: Request, res: Response) {
+        try {
+
+            const data: any = await TaskService.fetch_task(req);
+            return ResponseHelper.send_response(res, data?.http_status || 200, data?.data, data?.message);
+
+        } catch (e) {
+            console.log(e);
+            return ResponseHelper.send_response(res, 500, {});
+        }
+    }
+
 }

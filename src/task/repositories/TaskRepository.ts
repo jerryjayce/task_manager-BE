@@ -54,6 +54,24 @@ export class TaskRepository {
 
     }
 
+    static async fetch_user_tasks(user_id: string): Promise<any> {
+        try {
+            return await models.Task.find({user_id});
+        } catch (e) {
+            throw new Error(`error fetching video ${e}`);
+        }
+
+    }
+
+    static async fetch_task(user_id: string, task_id: string): Promise<any> {
+        try {
+            return await models.Task.find({user_id, _id: task_id});
+        } catch (e) {
+            throw new Error(`error fetching video ${e}`);
+        }
+
+    }
+
 
 
 }

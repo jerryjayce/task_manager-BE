@@ -1,5 +1,6 @@
 import { ResponseObject } from "../../utils/ResponseObject";
 import { TaskRepository } from "../repositories";
+import mongoose from "mongoose";
 
 
 export class TaskService {
@@ -11,13 +12,12 @@ export class TaskService {
         try {
 
             const data = req.body;
-            const user_id =  "1"        //req.headers.user.id
-            data.user_id = user_id     //to be gotten from auth
-
+            const user_id = "1";        //req.headers.user.id
+            data.user_id = user_id;         //to be gotten from auth
 
 
             //if there's tag_id in request body, check if tag exist before saving task data
-            if (data.tag_id && !data.tag_name){
+            if (data.tag_id && !data.tag_name) {
 
                 const tag = await TaskRepository.fetch_tag_by_id(data.tag_id, data.user_id);
 
@@ -31,9 +31,8 @@ export class TaskService {
             }
 
 
-
             //if there's tag_name in body, create new tag and save tag_id to task collection
-            if (data.tag_name){
+            if (data.tag_name) {
 
                 const tag = await TaskRepository.fetch_tag_by_name(data.tag_name, user_id);
 
@@ -45,12 +44,12 @@ export class TaskService {
                         id: new_tag_id,
                         user_id,
                         name: data.tag_name
-                    }
+                    };
 
                     await TaskRepository.add_tag(tag_data);
                     data.tag_id = new_tag_id;
 
-                }else {
+                } else {
 
                     data.tag_id = tag.id;
 
@@ -59,7 +58,7 @@ export class TaskService {
             }
 
 
-            if (!data.tag_id && !data.tag_name){
+            if (!data.tag_id && !data.tag_name) {
                 data.tag_id = null;
             }
 
@@ -77,5 +76,52 @@ export class TaskService {
 
     }
 
+    static async fetch_user_tasks(req) {
 
+        const response = new ResponseObject("Success", 200, {});
+
+        try {
+
+
+            const user_id = "1"       //req.headers.user.id;
+            response.data = await TaskRepository.fetch_user_tasks(user_id);
+
+            return response;
+
+        } catch (e) {
+            console.log(e);
+            throw new Error(`${e}`);
+        }
+    }
+
+    static async fetch_task(req) {
+
+        const response = new ResponseObject("Success", 200, {});
+
+        try {
+
+
+            const user_id = "1"        //req.headers.user.id;
+            const task_id = req.params.task_id;
+            const is_valid_ObjectId = mongoose.Types.ObjectId.isValid(task_id);
+            const tasks = is_valid_ObjectId ? await TaskRepository.fetch_task(user_id, task_id) : false;
+
+
+            if (!tasks) {
+
+                response.message = "Task does not exist";
+                response.http_status = 422;
+                return response;
+
+            }
+
+            response.data = tasks;
+
+            return response;
+
+        } catch (e) {
+            console.log(e);
+            throw new Error(`${e}`);
+        }
+    }
 }
