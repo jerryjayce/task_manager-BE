@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, isDateString, IsEnum} from "class-validator";
+import { IsNotEmpty, IsString, IsDateString, IsEnum, IsOptional} from "class-validator";
 enum TaskStatus {
     TODO = 'to-do',
     IN_PROGRESS = 'in-progress',
@@ -15,11 +15,12 @@ export default class LoginDto {
     @IsNotEmpty()
         description: string;
 
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    @isDateString()
+    @IsDateString()
         due_date: string;
+
+    @IsOptional()
+    @IsString()
+        tag_name: string;
 
     @IsEnum(TaskStatus)
         status: string;
