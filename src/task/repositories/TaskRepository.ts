@@ -87,5 +87,18 @@ export class TaskRepository {
 
     }
 
+    static async delete_task(user_id: string, task_id: string): Promise<any> {
+        try {
+
+            return await models.Task.deleteOne(
+                {user_id, _id: task_id }
+            );
+
+        } catch (e) {
+            throw new Error(`error Deleting task ${e}`);
+        }
+
+    }
+
 
 }

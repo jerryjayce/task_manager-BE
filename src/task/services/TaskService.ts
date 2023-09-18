@@ -148,7 +148,41 @@ export class TaskService {
             }
 
             await TaskRepository.update_task(user_id, task_id, data);
-            response.data = is_valid_ObjectId ? await TaskRepository.fetch_task(user_id, task_id) : false;
+            response.data = await TaskRepository.fetch_task(user_id, task_id);
+
+            return response;
+
+        } catch (e) {
+            console.log(e);
+            throw new Error(`${e}`);
+        }
+    }
+
+    static async delete_task(req) {
+
+        const response = new ResponseObject("Success", 200, {});
+
+        try {
+
+
+            const user_id = "1"             //req.headers.user.id;
+            const task_id = req.params.task_id;
+            const is_valid_ObjectId = mongoose.Types.ObjectId.isValid(task_id);
+            const task = is_valid_ObjectId ? await TaskRepository.fetch_task(user_id, task_id) : false;
+
+
+            console.log({task});
+
+            if (task.length === 0) {
+
+                response.message = "Task does not exist";
+                response.http_status = 422;
+                return response;
+
+            }
+
+            await TaskRepository.delete_task(user_id, task_id);
+            response.data = is_valid_ObjectId ? await TaskRepository.fetch_user_tasks(user_id) : false;
 
             return response;
 
