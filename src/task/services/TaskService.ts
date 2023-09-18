@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 export class TaskService {
     static async add_task(req): Promise<object> {
 
-        const response = new ResponseObject("Success", 200, {});
+        const response = new ResponseObject("Success", 201, {});
 
 
         try {
@@ -116,6 +116,39 @@ export class TaskService {
             }
 
             response.data = tasks;
+
+            return response;
+
+        } catch (e) {
+            console.log(e);
+            throw new Error(`${e}`);
+        }
+    }
+
+    static async update_task(req) {
+
+        const response = new ResponseObject("Success", 200, {});
+
+        try {
+
+
+            const data = req.body;
+            const user_id = "1"             //req.headers.user.id;
+            const task_id = req.body.task_id;
+            const is_valid_ObjectId = mongoose.Types.ObjectId.isValid(task_id);
+            const task = is_valid_ObjectId ? await TaskRepository.fetch_task(user_id, task_id) : false;
+
+
+            if (!task) {
+
+                response.message = "Task does not exist";
+                response.http_status = 422;
+                return response;
+
+            }
+
+            await TaskRepository.update_task(user_id, task_id, data);
+            response.data = is_valid_ObjectId ? await TaskRepository.fetch_task(user_id, task_id) : false;
 
             return response;
 
