@@ -107,7 +107,7 @@ export class TaskService {
             const tasks = is_valid_ObjectId ? await TaskRepository.fetch_task(user_id, task_id) : false;
 
 
-            if (!tasks) {
+            if (tasks.length === 0) {
 
                 response.message = "Task does not exist";
                 response.http_status = 422;
@@ -139,7 +139,7 @@ export class TaskService {
             const task = is_valid_ObjectId ? await TaskRepository.fetch_task(user_id, task_id) : false;
 
 
-            if (!task) {
+            if (task.length === 0) {
 
                 response.message = "Task does not exist";
                 response.http_status = 422;
@@ -170,8 +170,6 @@ export class TaskService {
             const is_valid_ObjectId = mongoose.Types.ObjectId.isValid(task_id);
             const task = is_valid_ObjectId ? await TaskRepository.fetch_task(user_id, task_id) : false;
 
-
-            console.log({task});
 
             if (task.length === 0) {
 
